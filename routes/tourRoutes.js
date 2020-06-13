@@ -1,4 +1,4 @@
-const express = require("express");
+const express = require('express');
 
 const tourController = require(`./../controllers/tourController`);
 
@@ -6,21 +6,25 @@ const tourController = require(`./../controllers/tourController`);
 const router = express.Router(); //this will work as a middleware
 
 //app.get("/api/v1/tours", getAllTours);
-//app.route("api/v1/tours").get(getAllTours).post(createTour);
+//app.route("api/v1/tours").get(getAllTours).post(createTour); we can use like this directly in app.js
 
 //param middleware for getting the value of id whetehr its valid in our database or not
-router.param("id", tourController.checkID);
+//router.param("id", tourController.checkID);
 
 //TOURS route
 router
-    .route("/")
-    .get(tourController.getAllTours)
-    .post(tourController.checkBody, tourController.createTour);
+  .route('/top-5-cheap')
+  .get(tourController.aliasTopTours, tourController.getAllTours);
+
+router.route('/tour-stats').get(tourController.getTourStats);
+router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);
+
+router.route('/').get(tourController.getAllTours).post(tourController.createTour);
 //we can attach 2 middleware function to same request too. here first checkbody will be executed and then createtour gets executed
 router
-    .route("/:id")
-    .get(tourController.getTour)
-    .patch(tourController.updateTour)
-    .delete(tourController.deleteTour);
+  .route('/:id')
+  .get(tourController.getTour)
+  .patch(tourController.updateTour)
+  .delete(tourController.deleteTour);
 
 module.exports = router;
