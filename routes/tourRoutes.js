@@ -12,9 +12,7 @@ const router = express.Router(); //this will work as a middleware
 //router.param("id", tourController.checkID);
 
 //TOURS route
-router
-  .route('/top-5-cheap')
-  .get(tourController.aliasTopTours, tourController.getAllTours);
+router.route('/top-5-cheap').get(tourController.aliasTopTours, tourController.getAllTours);
 
 router.route('/tour-stats').get(tourController.getTourStats);
 router.route('/monthly-plan/:year').get(tourController.getMonthlyPlan);

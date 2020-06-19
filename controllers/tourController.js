@@ -1,8 +1,8 @@
 const Tour = require(`../models/tourModel`);
 
-const AppError = require('../utils/appError')
+const AppError = require('../utils/appError');
 const APIFeatures = require('../utils/apiFeatures');
-const catchAsync = require('../utils/catchAsync')
+const catchAsync = require('../utils/catchAsync');
 
 //const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-simple.json`));
 
@@ -16,13 +16,8 @@ exports.aliasTopTours = async (req, res, next) => {
 exports.getAllTours = catchAsync(async (req, res, next) => {
   //final execution of query
   //chaining all queries because we return this in all those methods
-  const features = new APIFeatures(Tour.find(), req.query)
-    .filter()
-    .sort()
-    .limitFields()
-    .paginate();
+  const features = new APIFeatures(Tour.find(), req.query).filter().sort().limitFields().paginate();
   const tours = await features.query;
-
   res.status(200).json({
     status: 'success',
     results: tours.length,
@@ -40,7 +35,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   //breakdown Tour.findOne({ __id: req.parms.id })
   //no tour means null(changing last digit only of fid and we would get null in result. so deal with it)
   if (!tour) {
-    return next(new AppError('NO tour found with that id', 404))
+    return next(new AppError('NO tour found with that id', 404));
   }
 
   res.status(200).json({
@@ -53,7 +48,6 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
 //post some new tours data API
 exports.createTour = catchAsync(async (req, res, next) => {
-
   //console.log(req.body);
   //first way through which we saved data in DB
   //const newTour = new Tour({});
@@ -80,7 +74,7 @@ exports.updateTour = catchAsync(async (req, res, next) => {
   });
 
   if (!tour) {
-    return next(new AppError('NO tour found with that id', 404))
+    return next(new AppError('NO tour found with that id', 404));
   }
 
   res.status(200).json({
@@ -96,7 +90,7 @@ exports.deleteTour = catchAsync(async (req, res, next) => {
   const tour = await Tour.findByIdAndDelete(req.params.id);
 
   if (!tour) {
-    return next(new AppError('NO tour found with that id', 404))
+    return next(new AppError('NO tour found with that id', 404));
   }
 
   res.status(204).json({
@@ -108,41 +102,42 @@ exports.deleteTour = catchAsync(async (req, res, next) => {
 //aggregation pipeline function
 //we arite an array which has all diff stages. Then each those stages is actually an object
 exports.getTourStats = catchAsync(async (req, res, next) => {
-  const stats = await Tour.aggregate([{
+  const stats = await Tour.aggregate([
+    {
       $match: {
         ratingsAverage: {
-          $gte: 4.5
-        }
+          $gte: 4.5,
+        },
       },
     },
     {
       $group: {
         _id: {
-          $toUpper: '$difficulty'
+          $toUpper: '$difficulty',
         }, //group by similar
         numRatings: {
-          $sum: '$ratingsQuantity'
+          $sum: '$ratingsQuantity',
         },
         numTours: {
-          $sum: 1
+          $sum: 1,
         }, //one will be added each time
         avgrating: {
-          $avg: '$ratingsAverage'
+          $avg: '$ratingsAverage',
         },
         avgPrice: {
-          $avg: '$price'
+          $avg: '$price',
         },
         minPrice: {
-          $min: '$price'
+          $min: '$price',
         },
         maxPrice: {
-          $max: '$price'
+          $max: '$price',
         },
       },
     },
     {
       $sort: {
-        avgPrice: 1
+        avgPrice: 1,
       },
     },
     /* will exlcude easy tour.
@@ -162,7 +157,8 @@ exports.getTourStats = catchAsync(async (req, res, next) => {
 exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
   const year = req.params.year * 1; //2021
 
-  const plan = await Tour.aggregate([{
+  const plan = await Tour.aggregate([
+    {
       $unwind: '$startDates', //this will destrcture array elements  all those 3 dates will come in one result and then 1 orignal resul = 3 result
     },
     {
@@ -176,19 +172,19 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     {
       $group: {
         _id: {
-          $month: '$startDates'
+          $month: '$startDates',
         },
         numTourStarts: {
-          $sum: 1
+          $sum: 1,
         },
         tours: {
-          $push: '$name'
+          $push: '$name',
         },
       },
     },
     {
       $addFields: {
-        month: '$_id'
+        month: '$_id',
       },
     },
     {
@@ -198,7 +194,7 @@ exports.getMonthlyPlan = catchAsync(async (req, res, next) => {
     },
     {
       $sort: {
-        numTourStarts: -1
+        numTourStarts: -1,
       },
     },
     {
