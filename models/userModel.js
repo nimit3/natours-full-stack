@@ -43,7 +43,7 @@ userSchema.pre('save', async function (next) {
   //if password is not modified then return from the fn and do nothing. t will only run when pass is modified
   if (!this.isModified('password')) return next();
 
-  //encrypting password using hasing algo using bcrypt js npm package
+  //encrypting password using hasing algo using bcrypt js npm packagee
   this.password = await bcrypt.hash(this.password, 12); //secong args is called as a cost paramter. defalut value is 10. more value means more intense cpu process will be and better encrypt password
 
   this.passwordConfirm = undefined; //so password in DB will not be persisted. (deleting so in DB no one can see the password)
