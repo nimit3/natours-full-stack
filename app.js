@@ -1,5 +1,9 @@
 const express = require('express');
-const morgan = require('morgan'); //middleware for makinfg life easier for log in
+const morgan = require('morgan'); //middleware
+const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
+const mongoSanitize = require('express-mongo-sanitize');
+const xss = require('xss-clean');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -9,16 +13,40 @@ const userRouter = require('./routes/userRoutes');
 const app = express();
 
 //////////////////////////////////////////MIDDLEWARE/////////////////////////////////
+//secrutity http middleware
+//setting up http headers using helmet npm package
+app.use(helmet());
+
+/////////////////////GLOBAL MIDDLEWARE/////////////////////
+const limiter = rateLimit({
+  max: 100,
+  windowMs: 60 * 60 * 1000, //it will allow only 100 request for same IP address in 1 hour
+  message: 'Too many request from this IP, Please try again in one hour',
+});
+
+//limiter functionality will apply to all routes which start from /api
+app.use('/api', limiter);
+
+// Development logging middleware
 //console.log(process.env.NODE_ENV);
 if (process.env.NODE_ENV === 'development') {
   // morgan will give us like example ==== GET /api/v1/tours 200 3.154 ms - 9073
   app.use(morgan('dev'));
 }
-app.use(express.json());
 
+//Body parser, reading data from body into req.body
+//when req.body data will be larger than 10kb, it will reject the request
+app.use(express.json({ limit: '10kb' }));
+
+//Data sanitization agaoisnt NoSQL query injection
+app.use(mongoSanitize());
+
+//Data Sanitization agisnt XSS
+app.use(xss());
 //we can even serve static files using build in express middleware ex === serving html file or any images. we only need to apss the directory name and all those files in htat directroy will be accessed
 app.use(express.static(`${__dirname}/public`)); //(http://localhost:3000/overview.html  that link will open up that file)
 
+//test Middleware
 app.use((req, res, next) => {
   req.requestTime = new Date().toISOString();
   //console.log(req.headers);

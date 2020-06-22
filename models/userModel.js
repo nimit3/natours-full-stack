@@ -45,6 +45,11 @@ const userSchema = new mongoose.Schema({
   passwordChangedAt: Date,
   passwordresetToken: String,
   passwordresetExpires: Date,
+  active: {
+    type: Boolean,
+    default: true,
+    select: false,
+  },
 });
 
 //document mongoose middleware which will encrypt password before sving the data in DB
@@ -57,6 +62,20 @@ userSchema.pre('save', async function (next) {
   this.password = await bcrypt.hash(this.password, 12); //secong args is called as a cost paramter. defalut value is 10. more value means more intense cpu process will be and better encrypt password
 
   this.passwordConfirm = undefined; //so password in DB will not be persisted. (deleting so in DB no one can see the password)
+  next();
+});
+
+//updating passwordChaneggdat prop while resetting password doucment middleware on save
+userSchema.pre('save', function (next) {
+  if (!this.isModified('password') || this.isNew) return next();
+
+  this.passwordChangedAt = Date.now() - 1000; //deducting 1 min just so new token is not assigned while resetiing password before data gets entered into the DB
+  next();
+});
+
+userSchema.pre(/^find/, function (next) {
+  //this will point to current find of any query
+  this.find({ active: { $ne: false } });
   next();
 });
 
@@ -85,7 +104,7 @@ userSchema.methods.createPasswordResetToken = function () {
 
   //save that data in the schema field(passwordResetToken)
   this.passwordresetToken = crypto.createHash('sha256').update(resetToken).digest('hex');
-  console.log({ resetToken }, this.passwordresetToken);
+  //console.log({ resetToken }, this.passwordresetToken);
 
   //set now reset passsword exipary timing
   this.passwordresetExpires = Date.now() + 10 * 60 * 1000; //10 minutes
