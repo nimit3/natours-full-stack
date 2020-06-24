@@ -68,11 +68,7 @@ exports.login = catchAsync(async (req, res, next) => {
   }
 
   // 3) is everything is ok, send token to client
-  const token = signToken(user._id);
-  res.status(200).json({
-    status: 'success',
-    token,
-  });
+  createSendToken(user, 200, res);
 });
 
 //middleware fn for protecting getalltours function
@@ -93,7 +89,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   //promisfy function is used when some function returns promise
   //jwt.verify function we can match that token is same or not
   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
-  console.log(decoded);
+  // console.log(decoded);
 
   // 3) check if user exist(ex user's profile got deleted and someone tries to use his old token that hasn't expired yet)
   const currentUser = await User.findById(decoded.id);

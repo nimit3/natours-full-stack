@@ -32,7 +32,7 @@ exports.getTour = catchAsync(async (req, res, next) => {
   //  console.log(req.params);
   //  const id = req.params.id * 1; //for converting string to number. nice trick
   const tour = await Tour.findById(req.params.id);
-  //breakdown Tour.findOne({ __id: req.parms.id })
+  //breakdown Tour.findOne({ _id: req.parms.id })
   //no tour means null(changing last digit only of fid and we would get null in result. so deal with it)
   if (!tour) {
     return next(new AppError('NO tour found with that id', 404));

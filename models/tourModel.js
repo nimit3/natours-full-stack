@@ -1,6 +1,7 @@
 /* eslint-disable prefer-template */
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const User = require('./userModel');
 //const validator = require('validator');
 
 //simply creating modeling data with diff attr like required, default etc
@@ -84,6 +85,39 @@ const tourSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    startLocation: {
+      //GeoJSON for accessing geo special location data
+      type: {
+        type: String,
+        default: 'Point',
+        enum: ['Point'],
+      },
+      //it will store longitude first and latitude will be stored second
+      corordinates: [Number],
+      address: String,
+      description: String,
+    },
+    //embedding locations - denormalized
+    locations: [
+      {
+        type: {
+          type: String,
+          default: 'Point',
+          enum: ['Point'],
+        },
+        corordinates: [Number],
+        address: String,
+        description: String,
+        day: Number,
+      },
+    ],
+    //normalized way of putting users with their id into tour model
+    guides: [
+      {
+        type: mongoose.Schema.Types.ObjectID,
+        ref: 'User',
+      },
+    ],
   },
   {
     //this is for options for schema(virtual flieds etc). we can use find methods for finding this in query too. its just for saving some unimportant data
@@ -136,11 +170,28 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
+//populate is for filling up guides data into tour data. it for completing normaliztion process. It will show guides full info in this query. not only just objectID like we get in getalltours
+//select: '-field1 field2 field 3' all those fields will not be shown in ouptut of the result
+tourSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: 'guides',
+    select: '-__v -passwordChangedAt',
+  });
+  next();
+});
+
 tourSchema.post(/^find/, function (docs, next) {
   console.log(`query took ${Date.now() - this.start} milliseconds`);
   //console.log(docs);
   next();
 });
+
+//denormalized way of putting array of guides with their id into one specific tour
+// tourSchema.pre('save', async function (next) {
+//   const guidesPromises = this.guides.map(async (id) => await User.findById(id));
+//   this.guides = await Promise.all(guidesPromises);
+//   next();
+// });
 
 //////////////////////////AGGREGATION MIDDLEWARE////////////////////////
 tourSchema.pre('aggregate', function (next) {
