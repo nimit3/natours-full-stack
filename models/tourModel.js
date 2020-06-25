@@ -136,6 +136,13 @@ tourSchema.virtual('durationWeeks').get(function () {
   return this.duration / 7; //normal function so this keyword can have inner function scope
 });
 
+//virtually putting reviews array in tour section using "VIRTUAL POPULATE"
+tourSchema.virtual('reviews', {
+  ref: 'Review', //model that you want to reference
+  foreignField: 'tour', //foreign key in Review model
+  localField: '_id', //parent key name in tour model. ID
+});
+
 //monggose middleware document
 //it means below will run beofore save() and create(). it will not run before insertmany
 tourSchema.pre('save', function (next) {

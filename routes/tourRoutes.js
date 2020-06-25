@@ -2,9 +2,19 @@ const express = require('express');
 
 const tourController = require(`../controllers/tourController`);
 const authController = require('../controllers/authController');
+const reviewRouter = require('./reviewRoutes');
 
 //creating a munting so all getall tours can be saved in on router and other with specific id can be saved in another var
 const router = express.Router(); //this will work as a middleware
+
+////////////////NESTED ROUTES  (review child of tour---- it works with parent child referencing mostly)
+//while creating a review we want to pass tour id automatically with the url and user id will come from currently logged in user's
+//ex url POST /tour/id_of_tour/reviews
+//same will be for GET /tour/tour_id/reviews
+// GET /tour/tour_id/reviews/review_id
+
+//mounting a router
+router.use('/:tourId/reviews', reviewRouter);
 
 //app.get("/api/v1/tours", getAllTours);
 //app.route("api/v1/tours").get(getAllTours).post(createTour); we can use like this directly in app.js
