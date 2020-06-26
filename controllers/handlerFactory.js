@@ -90,6 +90,8 @@ exports.getAll = (Model) =>
       .sort()
       .limitFields()
       .paginate();
+    //for getting query statistics we can use explaing at the end and see query stats in the o/p in postman
+    //const doc = await features.query.explain();
     const doc = await features.query;
     res.status(200).json({
       status: 'success',

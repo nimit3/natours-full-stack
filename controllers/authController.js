@@ -71,7 +71,7 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
-//middleware fn for protecting getalltours function
+//middleware fn for protecting our middleware. This will ask to log in if we haven't logged in and verify JWT and pass the user info in req object
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) getting token and check if it's there
   let token;

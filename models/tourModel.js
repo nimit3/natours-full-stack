@@ -130,6 +130,12 @@ const tourSchema = new mongoose.Schema(
   }
 );
 
+///////////////////////CREATING INDEX ON PRICE FIELD//////////////////////////
+// tourSchema.index({ price: 1 }); //1 means index will be stored in asc order and -1 means in desc order
+///////////////////COMPUND INDEX CREATION
+tourSchema.index({ price: 1, ratingsAverage: -1 });
+tourSchema.index({ slug: 1 });
+
 ////////////////////////////DOCUMENT MIDDLEWARE/////////////
 //defining virtual properties which will not persist data
 tourSchema.virtual('durationWeeks').get(function () {
