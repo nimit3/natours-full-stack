@@ -40,6 +40,8 @@ router
   .get(tourController.getToursWithin);
 //tour-distance/233/center/-40,45/unit/km
 
+router.route('/distances/:latlng/unit/:unit').get(tourController.getDistances);
+
 //creating a middleware fn for protecting getalltour routes
 router
   .route('/')

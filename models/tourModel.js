@@ -94,7 +94,7 @@ const tourSchema = new mongoose.Schema(
         enum: ['Point'],
       },
       //it will store longitude first and latitude will be stored second
-      corordinates: [Number],
+      coordinates: [Number],
       address: String,
       description: String,
     },
@@ -106,7 +106,7 @@ const tourSchema = new mongoose.Schema(
           default: 'Point',
           enum: ['Point'],
         },
-        corordinates: [Number],
+        coordinates: [Number],
         address: String,
         description: String,
         day: Number,
@@ -136,7 +136,7 @@ const tourSchema = new mongoose.Schema(
 ///////////////////COMPUND INDEX CREATION
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
-// tourSchema.index({ startLocation: '2dsphere' });
+tourSchema.index({ startLocation: '2dsphere' });
 
 ////////////////////////////DOCUMENT MIDDLEWARE/////////////
 //defining virtual properties which will not persist data
@@ -209,17 +209,18 @@ tourSchema.post(/^find/, function (docs, next) {
 // });
 
 //////////////////////////AGGREGATION MIDDLEWARE////////////////////////
-tourSchema.pre('aggregate', function (next) {
-  //console.log(this.pipeline());
-  this.pipeline().unshift({
-    $match: {
-      sectretTour: {
-        $ne: true,
-      },
-    },
-  });
-  next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//   //console.log(this.pipeline());
+//   this.pipeline().unshift({
+//     $match: {
+//       sectretTour: {
+//         $ne: true,
+//       },
+//     },
+//   });
+//   console.log(this.pipeline());
+//   next();
+// });
 
 //creating a new mode from upper schema
 //syntax for ceating a model('name of the model', schema_name)
