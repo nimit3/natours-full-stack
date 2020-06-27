@@ -39,6 +39,7 @@ const tourSchema = new mongoose.Schema(
       default: 4.5,
       min: [1, 'Rating must be at leat 1.0 or above'],
       max: [5, 'A rating cannot exceed value of 5'],
+      set: (val) => Math.round(val * 10) / 10, //4.66666666 = mul 10 46.666666 round = 47 /10 = 4.7
     },
     ratingsQuantity: {
       type: Number,
@@ -135,6 +136,7 @@ const tourSchema = new mongoose.Schema(
 ///////////////////COMPUND INDEX CREATION
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+// tourSchema.index({ startLocation: '2dsphere' });
 
 ////////////////////////////DOCUMENT MIDDLEWARE/////////////
 //defining virtual properties which will not persist data

@@ -52,26 +52,26 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-//document mongoose middleware which will encrypt password before sving the data in DB
-userSchema.pre('save', async function (next) {
-  //isModified('field__name') is a methods which will check that whether the field name that we wrote in args has modified or not
-  //if password is not modified then return from the fn and do nothing. t will only run when pass is modified
-  if (!this.isModified('password')) return next();
+// //document mongoose middleware which will encrypt password before sving the data in DB
+// userSchema.pre('save', async function (next) {
+//   //isModified('field__name') is a methods which will check that whether the field name that we wrote in args has modified or not
+//   //if password is not modified then return from the fn and do nothing. t will only run when pass is modified
+//   if (!this.isModified('password')) return next();
 
-  //encrypting password using hasing algo using bcrypt js npm package
-  this.password = await bcrypt.hash(this.password, 12); //secong args is called as a cost paramter. defalut value is 10. more value means more intense cpu process will be and better encrypt password
+//   //encrypting password using hasing algo using bcrypt js npm package
+//   this.password = await bcrypt.hash(this.password, 12); //secong args is called as a cost paramter. defalut value is 10. more value means more intense cpu process will be and better encrypt password
 
-  this.passwordConfirm = undefined; //so password in DB will not be persisted. (deleting so in DB no one can see the password)
-  next();
-});
+//   this.passwordConfirm = undefined; //so password in DB will not be persisted. (deleting so in DB no one can see the password)
+//   next();
+// });
 
-//updating passwordChaneggdat prop while resetting password doucment middleware on save
-userSchema.pre('save', function (next) {
-  if (!this.isModified('password') || this.isNew) return next();
+// //updating passwordChaneggdat prop while resetting password doucment middleware on save
+// userSchema.pre('save', function (next) {
+//   if (!this.isModified('password') || this.isNew) return next();
 
-  this.passwordChangedAt = Date.now() - 1000; //deducting 1 min just so new token is not assigned while resetiing password before data gets entered into the DB
-  next();
-});
+//   this.passwordChangedAt = Date.now() - 1000; //deducting 1 min just so new token is not assigned while resetiing password before data gets entered into the DB
+//   next();
+// });
 
 userSchema.pre(/^find/, function (next) {
   //this will point to current find of any query

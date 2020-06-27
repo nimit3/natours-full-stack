@@ -34,6 +34,12 @@ router
     tourController.getMonthlyPlan
   );
 
+//geosspeical routes
+router
+  .route('/tours-within/:distance/center/:latlng/unit/:unit')
+  .get(tourController.getToursWithin);
+//tour-distance/233/center/-40,45/unit/km
+
 //creating a middleware fn for protecting getalltour routes
 router
   .route('/')
