@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan'); //middleware
 const rateLimit = require('express-rate-limit');
@@ -13,6 +14,12 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 
 const app = express();
+
+//setting up pug template for rendering html
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
+//we can even serve static files using build in express middleware ex === serving html file or any images. we only need to apss the directory name and all those files in htat directroy will be accessed
+app.use(express.static(path.join(__dirname, 'public'))); //(http://localhost:3000/overview.html  that link will open up that file)
 
 //////////////////////////////////////////MIDDLEWARE/////////////////////////////////
 //secrutity http middleware
@@ -45,8 +52,6 @@ app.use(mongoSanitize());
 
 //Data Sanitization agisnt XSS
 app.use(xss());
-//we can even serve static files using build in express middleware ex === serving html file or any images. we only need to apss the directory name and all those files in htat directroy will be accessed
-app.use(express.static(`${__dirname}/public`)); //(http://localhost:3000/overview.html  that link will open up that file)
 
 //prevent parameters pollution. ex. /query?sort=duration&sort=price. it will remove duplicate fileds
 app.use(
@@ -70,6 +75,11 @@ app.use((req, res, next) => {
 });
 
 ////////////////////////////////////////////ROUTING///////////////////////////////////////
+//////////////////////////////PUG html routes
+app.get('/', (req, res) => {
+  res.status(200).render('base');
+});
+
 //tourRouter will work as a middleware
 app.use('/api/v1/tours', tourRouter);
 //for user router
