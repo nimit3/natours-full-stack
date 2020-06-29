@@ -12,6 +12,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./views/viewRoutes');
 
 const app = express();
 
@@ -76,12 +77,7 @@ app.use((req, res, next) => {
 
 ////////////////////////////////////////////ROUTING///////////////////////////////////////
 //////////////////////////////PUG html routes
-app.get('/', (req, res) => {
-  res.status(200).render('base', {
-    tour: 'The Forest Hiker',
-    user: 'Nimit',
-  });
-});
+app.use('/', viewRouter);
 
 //tourRouter will work as a middleware
 app.use('/api/v1/tours', tourRouter);
