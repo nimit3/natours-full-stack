@@ -77,7 +77,10 @@ app.use((req, res, next) => {
 ////////////////////////////////////////////ROUTING///////////////////////////////////////
 //////////////////////////////PUG html routes
 app.get('/', (req, res) => {
-  res.status(200).render('base');
+  res.status(200).render('base', {
+    tour: 'The Forest Hiker',
+    user: 'Nimit',
+  });
 });
 
 //tourRouter will work as a middleware
