@@ -80,6 +80,10 @@ exports.protect = catchAsync(async (req, res, next) => {
     // Bearer jkevbjrekvnekrvn we want second part which is actual token so split and take first index of array
     //console.log(token);
   }
+  //this is for getting cookies from the chrome when user tries to sign in
+  else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
+  }
   //console.log(token);
   if (!token) {
     return next(new AppError('You are not logged in! Please log in to get access', 401));
@@ -104,6 +108,32 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   //grand access to rpotecet route(getAllTours route)
   req.user = currentUser;
+  next();
+});
+
+//just to check that user logged in or not. so we can decide whether to show login or signup button in header or not
+exports.isLoggedIn = catchAsync(async (req, res, next) => {
+  if (req.cookies.jwt) {
+    // 1) verify the token
+    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+    // console.log(decoded);
+
+    // 2) check if user exist(ex user's profile got deleted and someone tries to use his old token that hasn't expired yet)
+    const currentUser = await User.findById(decoded.id);
+    if (!currentUser) {
+      return next();
+    }
+
+    // 3) check if user change password after the jwt token was issued
+    //calling instance methods in model
+    if (currentUser.changePasswordAfter(decoded.iat)) {
+      return next();
+    }
+    //There is a logged in user
+    //we will ge this res.locals.user data into our pug template (is user in _header.pug)
+    res.locals.user = currentUser;
+    return next();
+  }
   next();
 });
 
