@@ -1,6 +1,9 @@
 /* eslint-disable */
+
+import axios from 'axios';
+import { showAlert } from './alerts';
 //-------------LOG IN FUNCTION
-const login = async (email, password) => {
+export const login = async (email, password) => {
   try {
     const result = await axios({
       method: 'POST',
@@ -12,21 +15,14 @@ const login = async (email, password) => {
       },
     });
     if (result.data.status === 'success') {
-      alert('Logged in successfully!');
+      showAlert('success', 'Logged in successfully!');
       //if we have get data successfully then we will put 1.5 seconds delay and then we will load homepage right away using location.assign('/)
       window.setTimeout(() => {
         location.assign('/');
       }, 1000);
     }
     console.log(result);
-  } catch (error) {
-    alert(error.response.data.message);
+  } catch (err) {
+    showAlert('error', err.response.data.message);
   }
 };
-//http://localhost:3000/api/v1/tours
-document.querySelector('.form').addEventListener('submit', (e) => {
-  e.preventDefault();
-  const email = document.getElementById('email').value;
-  const password = document.getElementById('password').value;
-  login(email, password);
-});
