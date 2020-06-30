@@ -1,6 +1,12 @@
 extends base
 //-including mixin from another file for review ratings
 include _reviewCard
+//- here append means that it will not remove the bloack head from abse.pug file compeltely, but it will append it
+//- same way we can even use prepand(for adding at the begining)
+block append head
+    script(src='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.js')
+    link(href='https://api.mapbox.com/mapbox-gl-js/v1.11.0/mapbox-gl.css' rel='stylesheet')
+
 //-mixin like a function
 mixin overviewBox(label, text, icon)
     .overview-box__detail
@@ -60,11 +66,12 @@ block content
     section.section-pictures
         each img, index in tour.images
             .picture-box
-                img.picture-box__img(src=`/img/tours/${img}`, alt=`The Park Camper Tour ${i + 1}`, 
-                class=`picture-box__img--${i + 1}`)
+                img.picture-box__img(src=`/img/tours/${img}`, alt=`The Park Camper Tour ${index + 1}`, 
+                class=`picture-box__img--${index + 1}`)
 
     section.section-map
-        #map
+        //- data-attribute
+        #map(data-locations=`${JSON.stringify(tour.locations)}`)
 
     section.section-reviews
         .reviews
