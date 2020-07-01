@@ -20,7 +20,8 @@ router.use(authController.protect);
 router.patch('/updateMyPassword', authController.updatePassword);
 // router.patch('/updateMyPassword', authController.protect, authController.updatePassword);
 
-router.patch('/updateMe', userController.updateMe);
+//upload.single(;name_of_the_field which will hold image of the upload)
+router.patch('/updateMe', userController.uploadUserPhoto, userController.updateMe);
 router.delete('/deleteMe', userController.deleteMe);
 
 //protecting the routes of creating, deleting, updating user for admin only
