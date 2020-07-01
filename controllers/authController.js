@@ -71,6 +71,14 @@ exports.login = catchAsync(async (req, res, next) => {
   createSendToken(user, 200, res);
 });
 
+exports.logOut = (req, res) => {
+  res.cookie('jwt', 'loggedout_dummy_text', {
+    expires: new Date(Date.now() + 10 * 1000), //10 seconds only
+    httpOnly: true,
+  });
+  res.status(200).json({ status: 'success' });
+};
+
 //middleware fn for protecting our middleware. This will ask to log in if we haven't logged in and verify JWT and pass the user info in req object
 exports.protect = catchAsync(async (req, res, next) => {
   // 1) getting token and check if it's there
@@ -112,30 +120,34 @@ exports.protect = catchAsync(async (req, res, next) => {
 });
 
 //just to check that user logged in or not. so we can decide whether to show login or signup button in header or not
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
+exports.isLoggedIn = async (req, res, next) => {
   if (req.cookies.jwt) {
-    // 1) verify the token
-    const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
-    // console.log(decoded);
+    try {
+      // 1) verify the token
+      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+      // console.log(decoded);
 
-    // 2) check if user exist(ex user's profile got deleted and someone tries to use his old token that hasn't expired yet)
-    const currentUser = await User.findById(decoded.id);
-    if (!currentUser) {
+      // 2) check if user exist(ex user's profile got deleted and someone tries to use his old token that hasn't expired yet)
+      const currentUser = await User.findById(decoded.id);
+      if (!currentUser) {
+        return next();
+      }
+
+      // 3) check if user change password after the jwt token was issued
+      //calling instance methods in model
+      if (currentUser.changePasswordAfter(decoded.iat)) {
+        return next();
+      }
+      //There is a logged in user
+      //we will ge this res.locals.user data into our pug template (is user in _header.pug)
+      res.locals.user = currentUser;
+      return next();
+    } catch (err) {
       return next();
     }
-
-    // 3) check if user change password after the jwt token was issued
-    //calling instance methods in model
-    if (currentUser.changePasswordAfter(decoded.iat)) {
-      return next();
-    }
-    //There is a logged in user
-    //we will ge this res.locals.user data into our pug template (is user in _header.pug)
-    res.locals.user = currentUser;
-    return next();
   }
   next();
-});
+};
 
 //restriction deleting tours on based of a role
 exports.restrictTo = (...roles) => {

@@ -1,7 +1,7 @@
 /* eslint-disable */
 
 import '@babel/polyfill';
-import { login } from './login';
+import { login, logout } from './login';
 import { displayMap } from './mapbox';
 //http://localhost:3000/api/v1/tours
 
@@ -10,6 +10,7 @@ import { displayMap } from './mapbox';
 
 const mapBox = document.getElementById('map');
 const loginForm = document.querySelector('.form');
+const logOutBtn = document.querySelector('.nav__el--logout');
 
 //delegation
 if (mapBox) {
@@ -25,3 +26,7 @@ if (loginForm)
     const password = document.getElementById('password').value;
     login(email, password);
   });
+
+if (logOutBtn) {
+  logOutBtn.addEventListener('click', logout);
+}

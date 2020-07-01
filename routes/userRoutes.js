@@ -12,6 +12,8 @@ router.post('/login', authController.login);
 router.post('/forgotPassword', authController.forgotPassword);
 router.patch('/resetPassword/:token', authController.resetPassword);
 
+router.get('/logout', authController.logOut);
+
 //so after before 4 routes which are technically middleware once run then below code will be executed. It means that authcontroller.protect will apply to all the middleware router which will be called next(aftet that line) middleware. ex patch,delete etc
 router.use(authController.protect);
 
