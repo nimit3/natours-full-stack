@@ -8457,7 +8457,7 @@ var logout = /*#__PURE__*/function () {
 
             //this location.reload(true) will refresh the page once it will receive second fake cookie successfully so cookie's value can be overwritten
             if (res.data.status === 'success') {
-              location.reload(true);
+              location.replace('/login');
             }
 
             _context2.next = 11;
@@ -8800,7 +8800,7 @@ var _mapbox = require("./mapbox");
 //how tog et value from data-locations attributes from html
 //.dataset.name_of_attributes(locations)
 var mapBox = document.getElementById('map');
-var loginForm = document.querySelector('.form');
+var loginForm = document.querySelector('.form--login');
 var logOutBtn = document.querySelector('.nav__el--logout'); //delegation
 
 if (mapBox) {
@@ -8848,7 +8848,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "50452" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "53410" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
@@ -9025,4 +9025,4 @@ function hmrAcceptRun(bundle, id) {
   }
 }
 },{}]},{},["../../node_modules/parcel-bundler/src/builtins/hmr-runtime.js","index.js"], null)
-//# sourceMappingURL=/bundle.js.map
+//# sourceMappingURL=/js/bundle.js.map

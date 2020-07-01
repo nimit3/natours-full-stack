@@ -73,7 +73,8 @@ exports.login = catchAsync(async (req, res, next) => {
 
 exports.logOut = (req, res) => {
   res.cookie('jwt', 'loggedout_dummy_text', {
-    expires: new Date(Date.now() + 10 * 1000), //10 seconds only
+    expires: new Date(Date.now()), //10 seconds only
+    // expires: new Date(Date.now() + 10 * 1000), //10 seconds only
     httpOnly: true,
   });
   res.status(200).json({ status: 'success' });
@@ -116,6 +117,7 @@ exports.protect = catchAsync(async (req, res, next) => {
   }
   //grand access to rpotecet route(getAllTours route)
   req.user = currentUser;
+  res.locals.user = currentUser;
   next();
 });
 

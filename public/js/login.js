@@ -35,7 +35,7 @@ export const logout = async () => {
     });
     //this location.reload(true) will refresh the page once it will receive second fake cookie successfully so cookie's value can be overwritten
     if (res.data.status === 'success') {
-      location.reload(true);
+      location.replace('/login');
     }
   } catch (err) {
     console.log(err.response);
