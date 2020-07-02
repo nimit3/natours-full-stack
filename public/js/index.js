@@ -3,6 +3,7 @@ import '@babel/polyfill';
 import { login, logout } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
+import { signup } from './signup';
 //http://localhost:3000/api/v1/tours
 
 //how tog et value from data-locations attributes from html
@@ -13,6 +14,7 @@ const loginForm = document.querySelector('.form--login');
 const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const signupForm = document.querySelector('.form--signup');
 
 //delegation
 if (mapBox) {
@@ -21,13 +23,26 @@ if (mapBox) {
   displayMap(locations);
 }
 if (loginForm)
-  loginForm.addEventListener('submit', (e) => {
+  loginForm.addEventListener('submit', async (e) => {
     e.preventDefault();
+    document.querySelector('.login').textContent = 'Processing';
     //values
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
-    login(email, password);
+    await login(email, password);
   });
+
+if (signupForm) {
+  signupForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    document.querySelector('.sign-up').textContent = 'Signing Up...';
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const passwordConfirm = document.getElementById('passwordConfirm').value;
+    await signup(name, email, password, passwordConfirm);
+  });
+}
 
 if (logOutBtn) {
   logOutBtn.addEventListener('click', logout);
