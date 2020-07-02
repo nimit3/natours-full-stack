@@ -1,5 +1,6 @@
 const fs = require('fs');
 const multer = require('multer');
+const sharp = require('sharp');
 const catchAsync = require('../utils/catchAsync');
 const AppError = require('../utils/appError');
 const User = require('../models/userModel');
@@ -7,17 +8,18 @@ const { use } = require('../routes/tourRoutes');
 const factory = require('./handlerFactory');
 
 //multer configuration. images iwll be saved in public/img dir
-const multerStorage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, 'public/img/users');
-  },
-  filename: (req, file, cb) => {
-    // user-42879341e89hfd238(id)-3876187148(current_timestamp).jpeg
-    //mimetype for getting file extension
-    const ext = file.mimetype.split('/')[1];
-    cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
-  },
-});
+// const multerStorage = multer.diskStorage({
+//   destination: (req, file, cb) => {
+//     cb(null, 'public/img/users');
+//   },
+//   filename: (req, file, cb) => {
+//     // user-42879341e89hfd238(id)-3876187148(current_timestamp).jpeg
+//     //mimetype for getting file extension
+//     const ext = file.mimetype.split('/')[1];
+//     cb(null, `user-${req.user.id}-${Date.now()}.${ext}`);
+//   },
+// });
+const multerStorage = multer.memoryStorage();
 
 //multer filter. this is for not uploading some doc which are not image. only upload images
 const multerFilter = (req, file, cb) => {
@@ -35,6 +37,21 @@ const upload = multer({
 });
 
 exports.uploadUserPhoto = upload.single('photo');
+
+//image processing resizing images using sharp npm library
+exports.resizeUserPhoto = catchAsync(async (req, res, next) => {
+  //if no image is uploaded then simply go to next middleware without doing anything
+  if (!req.file) return next();
+  req.file.filename = `user-${req.user.id}-${Date.now()}.jpeg`;
+  //resize(heught,width)
+  await sharp(req.file.buffer)
+    .resize(500, 500)
+    .toFormat('jpeg')
+    .jpeg({ quality: 90 })
+    .toFile(`public/img/users/${req.file.filename}`);
+
+  next();
+});
 
 const filterObj = (obj, ...allowedFields) => {
   const newObj = {};
