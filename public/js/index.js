@@ -4,6 +4,7 @@ import { login, logout } from './login';
 import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { signup } from './signup';
+import { bookTour } from './stripe';
 //http://localhost:3000/api/v1/tours
 
 //how tog et value from data-locations attributes from html
@@ -15,6 +16,7 @@ const logOutBtn = document.querySelector('.nav__el--logout');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const signupForm = document.querySelector('.form--signup');
+const bookBtn = document.getElementById('book-tour');
 
 //delegation
 if (mapBox) {
@@ -83,3 +85,11 @@ if (userPasswordForm) {
 //   "password":"pass123",
 //   "passwordConfirm": "pass123"
 // }
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', (e) => {
+    e.target.textContent = 'Processing...';
+    const tourId = e.target.dataset.tourId;
+    bookTour(tourId);
+  });
+}

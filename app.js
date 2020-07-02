@@ -13,6 +13,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./views/viewRoutes');
 
 const app = express();
@@ -88,6 +89,7 @@ app.use('/api/v1/tours', tourRouter);
 //for user router
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/reviews', reviewRouter);
+app.use('/api/v1/bookings', bookingRouter);
 
 //app.all() means it will run for all http methods. get, post, put etc. middleware which will check for incorrect url
 app.all('*', (req, res, next) => {
