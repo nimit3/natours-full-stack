@@ -43,6 +43,10 @@ if (signupForm) {
     const password = document.getElementById('password').value;
     const passwordConfirm = document.getElementById('passwordConfirm').value;
     await signup(name, email, password, passwordConfirm);
+    document.getElementById('name').value = '';
+    document.getElementById('email').value = '';
+    document.getElementById('password').value = '';
+    document.getElementById('passwordConfirm').value = '';
   });
 }
 
