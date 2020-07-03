@@ -19,6 +19,8 @@ const viewRouter = require('./views/viewRoutes');
 
 const app = express();
 
+app.enable('trust proxy');
+
 //setting up pug template for rendering html
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
