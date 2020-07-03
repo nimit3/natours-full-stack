@@ -1,1 +1,1 @@
-This project is being developed at the momment😊!
+Tour booking full stack project developed with nodejs, express, mongodb and many more😊
