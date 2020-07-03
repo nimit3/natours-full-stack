@@ -195,11 +195,11 @@ tourSchema.pre(/^find/, function (next) {
   next();
 });
 
-tourSchema.post(/^find/, function (docs, next) {
-  console.log(`query took ${Date.now() - this.start} milliseconds`);
-  //console.log(docs);
-  next();
-});
+// tourSchema.post(/^find/, function (docs, next) {
+//   console.log(`query took ${Date.now() - this.start} milliseconds`);
+//   //console.log(docs);
+//   next();
+// });
 
 //denormalized way of putting array of guides with their id into one specific tour
 // tourSchema.pre('save', async function (next) {

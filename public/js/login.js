@@ -8,7 +8,8 @@ export const login = async (email, password) => {
     const result = await axios({
       method: 'POST',
       //type the log in api link that we have defined while desgining log in API
-      url: 'http://localhost:3000/api/v1/users/login',
+      // url: 'http://localhost:3000/api/v1/users/login',
+      url: '/api/v1/users/login',
       data: {
         email: email,
         password: password,
@@ -21,7 +22,7 @@ export const login = async (email, password) => {
         location.assign('/');
       }, 1000);
     }
-    console.log(result);
+    // console.log(result);
   } catch (err) {
     showAlert('error', err.response.data.message);
   }
@@ -31,14 +32,14 @@ export const logout = async () => {
   try {
     const res = await axios({
       method: 'GET',
-      url: 'http://localhost:3000/api/v1/users/logout',
+      url: '/api/v1/users/logout',
     });
     //this location.reload(true) will refresh the page once it will receive second fake cookie successfully so cookie's value can be overwritten
     if (res.data.status === 'success') {
       location.replace('/login');
     }
   } catch (err) {
-    console.log(err.response);
+    // console.log(err.response);
     showAlert('error', 'Error logging out! Try once again!');
   }
 };
