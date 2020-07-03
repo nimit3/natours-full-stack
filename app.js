@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
@@ -31,6 +32,14 @@ app.use(express.static(path.join(__dirname, 'public'))); //(http://localhost:300
 //secrutity http middleware
 //setting up http headers using helmet npm package
 app.use(helmet());
+
+//SETTING UP CORS
+app.use(cors());
+//access-control-allow-origin. For all the request, this cors will be applied
+//options is just anothe http request like get, post, etc
+app.options('*', cors());
+// we can even apply to only some specific route this cors if we want
+// app.options('api/v1/tours/:id', cors())
 
 /////////////////////GLOBAL MIDDLEWARE/////////////////////
 const limiter = rateLimit({
