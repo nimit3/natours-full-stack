@@ -5,6 +5,7 @@ import { displayMap } from './mapbox';
 import { updateSettings } from './updateSettings';
 import { signup } from './signup';
 import { bookTour } from './stripe';
+import { showAlert } from './alerts';
 //http://localhost:3000/api/v1/tours
 
 //how tog et value from data-locations attributes from html
@@ -97,3 +98,6 @@ if (bookBtn) {
     bookTour(tourId);
   });
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+if (alert) showAlert('success', alertMessage, 20);
