@@ -17,6 +17,7 @@ const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
 const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./views/viewRoutes');
+const bookingController = require('./controllers/bookingController');
 
 const app = express();
 
@@ -47,6 +48,13 @@ const limiter = rateLimit({
   windowMs: 60 * 60 * 1000, //it will allow only 100 request for same IP address in 1 hour
   message: 'Too many request from this IP, Please try again in one hour',
 });
+
+//stripe successful payment router after deploting the website
+app.post(
+  'webhook-checkout',
+  express.raw({ type: 'application/json' }),
+  bookingController.webhookCheckout
+);
 
 //limiter functionality will apply to all routes which start from /api
 app.use('/api', limiter);
